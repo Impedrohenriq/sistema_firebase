@@ -23,7 +23,8 @@ import {
   ScrollView,
 } from 'react-native';
 import InputField from '../components/InputField';
-import { cadastrarPessoa } from '../services/userService';
+import { cadastrarUsuario } from '../services/authService';
+import { salvarPerfilUsuario } from '../services/userService';
 
 const CadastroScreen = ({ navigation }) => {
   // ── Estados do formulário ─────────────────────────────────
@@ -57,23 +58,20 @@ const CadastroScreen = ({ navigation }) => {
     setCarregando(true);
     try {
       // Monta o objeto com os dados da pessoa
-      const dadosPessoa = {
+      const dadosPerfil = {
         nome: nome.trim(),
         email: email.trim().toLowerCase(),
-        senha: senha,
         telefone: telefone.trim(),
         idade: idade ? parseInt(idade, 10) : null,
       };
 
-      // Chama o service que faz addDoc() no Firestore
-      const idGerado = await cadastrarPessoa(dadosPessoa);
-      console.log('Pessoa cadastrada com ID:', idGerado);
+      const usuario = await cadastrarUsuario(dadosPerfil.email, senha);
+      await salvarPerfilUsuario(usuario.uid, dadosPerfil);
 
       Alert.alert('Sucesso!', `"${nome}" foi cadastrado com sucesso.`, [
         {
           text: 'OK',
-          // Após confirmar, volta para a listagem
-          onPress: () => navigation.navigate('Listagem'),
+          onPress: () => navigation.replace('Home'),
         },
       ]);
 

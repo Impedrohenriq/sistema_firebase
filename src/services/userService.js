@@ -22,6 +22,7 @@ import {
   deleteDoc,     // Exclui um documento pelo ID
   orderBy,       // Ordena os resultados
   query,         // Cria uma consulta com filtros
+  setDoc,
   serverTimestamp, // Timestamp do servidor Firebase
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -101,4 +102,27 @@ export const atualizarPessoa = async (id, dados) => {
 export const excluirPessoa = async (id) => {
   const docRef = doc(db, COLECAO, id);
   await deleteDoc(docRef);
+};
+
+// ------------------------------------------------------------
+// PERFIL DO USUÁRIO LOGADO (coleção: users)
+// ------------------------------------------------------------
+export const salvarPerfilUsuario = async (uid, dados) => {
+  const docRef = doc(db, 'users', uid);
+  await setDoc(
+    docRef,
+    {
+      ...dados,
+      atualizadoEm: serverTimestamp(),
+      criadoEm: serverTimestamp(),
+    },
+    { merge: true }
+  );
+};
+
+export const buscarPerfilUsuarioPorUid = async (uid) => {
+  const docRef = doc(db, 'users', uid);
+  const snapshot = await getDoc(docRef);
+  if (!snapshot.exists()) return null;
+  return { id: snapshot.id, ...snapshot.data() };
 };

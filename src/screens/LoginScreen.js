@@ -49,8 +49,8 @@ const LoginScreen = ({ navigation }) => {
     setCarregando(true);
     try {
       await fazerLogin(email.trim(), senha);
-      // Navega para Listagem e remove a tela de Login da pilha
-      navigation.replace('Listagem');
+      // Navega para Home e remove a tela de Login da pilha
+      navigation.replace('Home');
     } catch (erro) {
       // Traduz códigos de erro do Firebase para mensagens amigáveis
       let mensagem = 'Erro ao fazer login. Tente novamente.';

@@ -5,8 +5,8 @@
 // Utiliza Stack Navigator do React Navigation.
 //
 // Fluxo de navegação:
-// Login → Listagem ↔ Cadastro
-//                 ↔ Alteracao
+// Login → Cadastro
+// Login/Cadastro → Home
 // ============================================================
 
 import React, { useEffect, useState } from 'react';
@@ -19,8 +19,7 @@ import { auth } from '../config/firebase';
 // Importação das telas
 import LoginScreen from '../screens/LoginScreen';
 import CadastroScreen from '../screens/CadastroScreen';
-import ListagemScreen from '../screens/ListagemScreen';
-import AlteracaoScreen from '../screens/AlteracaoScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -60,7 +59,7 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         // Define a tela inicial baseada no estado de autenticação
-        initialRouteName={usuarioLogado ? 'Listagem' : 'Login'}
+        initialRouteName={usuarioLogado ? 'Home' : 'Login'}
       >
         {/* Tela de Login */}
         <Stack.Screen
@@ -76,18 +75,11 @@ const AppNavigator = () => {
           options={{ title: 'Novo Cadastro', ...headerPadrao }}
         />
 
-        {/* Tela de Listagem */}
+        {/* Tela Home */}
         <Stack.Screen
-          name="Listagem"
-          component={ListagemScreen}
-          options={{ title: 'Lista de Pessoas', ...headerPadrao }}
-        />
-
-        {/* Tela de Alteração */}
-        <Stack.Screen
-          name="Alteracao"
-          component={AlteracaoScreen}
-          options={{ title: 'Editar Registro', ...headerPadrao }}
+          name="Home"
+          component={HomeScreen}
+          options={{ title: 'Home do Usuario', ...headerPadrao }}
         />
       </Stack.Navigator>
     </NavigationContainer>
