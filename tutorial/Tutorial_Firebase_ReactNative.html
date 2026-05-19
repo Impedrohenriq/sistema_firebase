@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: React Native + Firebase Firestore</title>
+  <style>
+    body {
+      font-family: 'Calibri', 'Arial', sans-serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #222;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 50px;
+      background: #fff;
+    }
+    h1 {
+      font-size: 24pt;
+      color: #1A237E;
+      border-bottom: 3px solid #3F51B5;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 16pt;
+      color: #3F51B5;
+      border-left: 5px solid #3F51B5;
+      padding-left: 12px;
+      margin-top: 40px;
+    }
+    h3 {
+      font-size: 13pt;
+      color: #303F9F;
+      margin-top: 24px;
+    }
+    h4 {
+      font-size: 12pt;
+      color: #555;
+      margin-top: 16px;
+    }
+    .capa {
+      text-align: center;
+      padding: 60px 0 40px;
+      border-bottom: 2px solid #E0E0E0;
+      margin-bottom: 40px;
+    }
+    .capa h1 {
+      font-size: 28pt;
+      border: none;
+      margin-bottom: 8px;
+    }
+    .capa .subtitulo {
+      font-size: 14pt;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .capa .meta {
+      font-size: 10pt;
+      color: #999;
+    }
+    .badge {
+      display: inline-block;
+      background: #3F51B5;
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 10pt;
+      margin: 2px;
+    }
+    .badge.green  { background: #4CAF50; }
+    .badge.orange { background: #FF9800; }
+    .badge.red    { background: #E74C3C; }
+    code {
+      background: #F5F5F5;
+      border: 1px solid #DDD;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 10.5pt;
+      color: #C7254E;
+    }
+    pre {
+      background: #1E1E2E;
+      color: #CDD6F4;
+      border-radius: 8px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 10pt;
+      line-height: 1.7;
+      margin: 16px 0;
+      border-left: 4px solid #3F51B5;
+    }
+    pre .comment { color: #6C7086; }
+    pre .keyword { color: #CBA6F7; }
+    pre .string  { color: #A6E3A1; }
+    pre .fn      { color: #89DCEB; }
+    .box {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .box-info    { background: #E3F2FD; border-left: 5px solid #2196F3; }
+    .box-warning { background: #FFF8E1; border-left: 5px solid #FF9800; }
+    .box-success { background: #E8F5E9; border-left: 5px solid #4CAF50; }
+    .box-danger  { background: #FFEBEE; border-left: 5px solid #E74C3C; }
+    .box strong  { display: block; margin-bottom: 4px; font-size: 11pt; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 11pt;
+    }
+    th {
+      background: #3F51B5;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #E0E0E0;
+    }
+    tr:nth-child(even) td { background: #F5F5F5; }
+    .estrutura {
+      background: #F8F8F8;
+      border: 1px solid #DDD;
+      border-radius: 8px;
+      padding: 16px 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 10.5pt;
+      line-height: 2;
+    }
+    .passo {
+      background: #fff;
+      border: 1px solid #E0E0E0;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .passo-numero {
+      display: inline-block;
+      background: #3F51B5;
+      color: #fff;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      font-weight: bold;
+      margin-right: 8px;
+      font-size: 12pt;
+    }
+    .passo h3 { margin-top: 0; display: inline; }
+    .screenshot-placeholder {
+      background: #F0F4FF;
+      border: 2px dashed #90A4AE;
+      border-radius: 8px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #90A4AE;
+      font-size: 13pt;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .fluxo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+      font-size: 11pt;
+    }
+    .fluxo-tela {
+      background: #3F51B5;
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 14px;
+    }
+    .fluxo-seta { color: #3F51B5; font-size: 14pt; }
+    hr {
+      border: none;
+      border-top: 1px solid #E0E0E0;
+      margin: 40px 0;
+    }
+    .indice { margin: 20px 0 40px; }
+    .indice li { margin: 6px 0; }
+    .indice a { color: #3F51B5; text-decoration: none; }
+    .indice a:hover { text-decoration: underline; }
+    @media print {
+      body { max-width: 100%; padding: 20px; }
+      pre { font-size: 9pt; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CAPA                                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="capa">
+  <div style="font-size:48pt; margin-bottom:16px;">🔥</div>
+  <h1>React Native + Firebase Firestore</h1>
+  <p class="subtitulo">Tutorial completo de CRUD com autenticação</p>
+  <div style="margin: 16px 0;">
+    <span class="badge">Expo SDK 55</span>
+    <span class="badge">Firebase 11</span>
+    <span class="badge">React Navigation 6</span>
+    <span class="badge green">Firestore</span>
+    <span class="badge orange">Authentication</span>
+  </div>
+  <p class="meta">Criado com GitHub Copilot &nbsp;|&nbsp; Maio / 2026</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ÍNDICE                                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>Índice</h2>
+<ol class="indice">
+  <li><a href="#introducao">Introdução e Objetivos</a></li>
+  <li><a href="#conceitos">Conceitos do Firebase</a></li>
+  <li><a href="#pre-requisitos">Pré-requisitos</a></li>
+  <li><a href="#firebase-console">Configurando o Firebase Console</a></li>
+  <li><a href="#projeto">Criando o Projeto Expo</a></li>
+  <li><a href="#estrutura">Estrutura de Arquivos</a></li>
+  <li><a href="#config">Arquivo de Configuração (firebase.js)</a></li>
+  <li><a href="#auth-service">Serviço de Autenticação (authService.js)</a></li>
+  <li><a href="#user-service">Serviço CRUD (userService.js)</a></li>
+  <li><a href="#componentes">Componentes Reutilizáveis</a></li>
+  <li><a href="#login">Tela de Login</a></li>
+  <li><a href="#cadastro">Tela de Cadastro (CREATE)</a></li>
+  <li><a href="#listagem">Tela de Listagem (READ + DELETE)</a></li>
+  <li><a href="#alteracao">Tela de Alteração (UPDATE)</a></li>
+  <li><a href="#navegacao">Configuração de Navegação</a></li>
+  <li><a href="#executar">Executando o Projeto</a></li>
+  <li><a href="#resumo">Resumo dos Métodos Firestore</a></li>
+</ol>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 1. INTRODUÇÃO                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="introducao">1. Introdução e Objetivos</h2>
+
+<p>
+  Este tutorial demonstra como construir uma aplicação <strong>React Native</strong> completa 
+  utilizando o <strong>Firebase Firestore</strong> como banco de dados e o 
+  <strong>Firebase Authentication</strong> para autenticação de usuários.
+</p>
+
+<p>O foco principal é a <strong>componentização e isolamento de funções</strong>, permitindo 
+  compreender exatamente como cada método do Firestore funciona.</p>
+
+<h3>O que você vai aprender</h3>
+<ul>
+  <li>Criar e configurar um projeto no Firebase Console</li>
+  <li>Conectar um app React Native (Expo) ao Firebase</li>
+  <li>Implementar CRUD completo no Firestore</li>
+  <li>Isolar operações em serviços separados</li>
+  <li>Autenticar usuários com Firebase Auth</li>
+  <li>Navegar entre telas com React Navigation</li>
+</ul>
+
+<h3>Fluxo de telas do aplicativo</h3>
+<div class="fluxo">
+  <div class="fluxo-tela">Login</div>
+  <span class="fluxo-seta">→</span>
+  <div class="fluxo-tela">Listagem</div>
+  <span class="fluxo-seta">↔</span>
+  <div class="fluxo-tela">Cadastro</div>
+  <span class="fluxo-seta">&nbsp;</span>
+  <div class="fluxo-tela">Listagem</div>
+  <span class="fluxo-seta">↔</span>
+  <div class="fluxo-tela">Alteração</div>
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 2. CONCEITOS                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="conceitos">2. Conceitos do Firebase</h2>
+
+<h3>O que é o Firebase?</h3>
+<p>
+  Firebase é uma plataforma da Google para desenvolvimento de aplicações. 
+  Oferece banco de dados, autenticação, armazenamento, hospedagem e muito mais, 
+  tudo gerenciado pela infraestrutura do Google Cloud.
+</p>
+
+<h3>O que é o Firestore?</h3>
+<p>
+  O <strong>Cloud Firestore</strong> é um banco de dados NoSQL orientado a documentos. 
+  Os dados são organizados em <strong>coleções</strong> que contêm <strong>documentos</strong>, 
+  e cada documento pode ter campos de vários tipos.
+</p>
+
+<table>
+  <thead>
+    <tr><th>Conceito</th><th>Analogia SQL</th><th>Exemplo neste projeto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Coleção</strong></td><td>Tabela</td><td><code>pessoas</code></td></tr>
+    <tr><td><strong>Documento</strong></td><td>Linha/Registro</td><td>Dados de uma pessoa</td></tr>
+    <tr><td><strong>Campo</strong></td><td>Coluna</td><td><code>nome</code>, <code>email</code></td></tr>
+    <tr><td><strong>ID do documento</strong></td><td>Chave primária</td><td>Gerado automaticamente</td></tr>
+  </tbody>
+</table>
+
+<h3>Exemplo de documento no Firestore</h3>
+<pre><span class="comment">// Coleção: "pessoas"
+// Documento ID: "abc123xyz"</span>
+{
+  <span class="string">"nome"</span>: <span class="string">"João Silva"</span>,
+  <span class="string">"email"</span>: <span class="string">"joao@email.com"</span>,
+  <span class="string">"telefone"</span>: <span class="string">"(11) 99999-9999"</span>,
+  <span class="string">"idade"</span>: 28,
+  <span class="string">"criadoEm"</span>: <span class="string">Timestamp(2026-05-19)</span>
+}</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 3. PRÉ-REQUISITOS                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="pre-requisitos">3. Pré-requisitos</h2>
+
+<div class="box box-warning">
+  <strong>⚠️ Instale esses programas antes de começar</strong>
+  Certifique-se de que as ferramentas abaixo estão instaladas na sua máquina.
+</div>
+
+<table>
+  <thead>
+    <tr><th>Ferramenta</th><th>Versão mínima</th><th>Download</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Node.js</td><td>18.x LTS</td><td>nodejs.org</td></tr>
+    <tr><td>npm</td><td>9.x</td><td>Incluído com Node.js</td></tr>
+    <tr><td>Expo Go (smartphone)</td><td>Última versão</td><td>App Store / Play Store</td></tr>
+    <tr><td>VS Code (recomendado)</td><td>Qualquer versão</td><td>code.visualstudio.com</td></tr>
+    <tr><td>Conta Google</td><td>—</td><td>Para acessar o Firebase</td></tr>
+  </tbody>
+</table>
+
+<p>Para verificar se o Node e npm estão instalados, abra o terminal e execute:</p>
+<pre>node --version
+npm --version</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 4. FIREBASE CONSOLE                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="firebase-console">4. Configurando o Firebase Console</h2>
+
+<div class="passo">
+  <span class="passo-numero">1</span>
+  <h3>Acessar o Firebase Console</h3>
+  <p>Acesse <strong>https://console.firebase.google.com/</strong> e faça login com sua conta Google.</p>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">2</span>
+  <h3>Criar um novo projeto</h3>
+  <ol>
+    <li>Clique em <strong>"Criar um projeto"</strong></li>
+    <li>Digite o nome do projeto (ex: <code>sistema-firebase</code>)</li>
+    <li>Desative o Google Analytics (opcional para este tutorial)</li>
+    <li>Clique em <strong>"Criar projeto"</strong> e aguarde</li>
+  </ol>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">3</span>
+  <h3>Adicionar um app Web</h3>
+  <ol>
+    <li>Na tela inicial do projeto, clique no ícone <strong>"Web" (&lt;/&gt;)</strong></li>
+    <li>Digite um apelido para o app (ex: <code>app-react-native</code>)</li>
+    <li>Clique em <strong>"Registrar app"</strong></li>
+    <li><strong>Copie o objeto <code>firebaseConfig</code></strong> — você vai precisar dele!</li>
+  </ol>
+
+  <pre><span class="comment">// Exemplo do objeto que o Firebase fornece:</span>
+<span class="keyword">const</span> firebaseConfig = {
+  apiKey: <span class="string">"AIzaSy..."</span>,
+  authDomain: <span class="string">"meu-projeto.firebaseapp.com"</span>,
+  projectId: <span class="string">"meu-projeto"</span>,
+  storageBucket: <span class="string">"meu-projeto.appspot.com"</span>,
+  messagingSenderId: <span class="string">"123456789"</span>,
+  appId: <span class="string">"1:123456789:web:abc123"</span>
+};</pre>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">4</span>
+  <h3>Ativar o Firestore Database</h3>
+  <ol>
+    <li>No menu lateral, clique em <strong>"Firestore Database"</strong></li>
+    <li>Clique em <strong>"Criar banco de dados"</strong></li>
+    <li>Selecione <strong>"Iniciar no modo de teste"</strong></li>
+    <li>Escolha a região <strong>"southamerica-east1 (São Paulo)"</strong></li>
+    <li>Clique em <strong>"Ativar"</strong></li>
+  </ol>
+  <div class="box box-warning">
+    <strong>⚠️ Modo de Teste</strong>
+    O modo de teste permite leitura e escrita sem autenticação por 30 dias. 
+    Para produção, configure as regras de segurança adequadamente.
+  </div>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">5</span>
+  <h3>Ativar o Authentication</h3>
+  <ol>
+    <li>No menu lateral, clique em <strong>"Authentication"</strong></li>
+    <li>Clique em <strong>"Começar"</strong></li>
+    <li>Na aba <strong>"Sign-in method"</strong>, habilite <strong>"Email/senha"</strong></li>
+    <li>Clique em <strong>"Salvar"</strong></li>
+  </ol>
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 5. CRIANDO O PROJETO                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="projeto">5. Criando o Projeto Expo</h2>
+
+<p>Abra o terminal na pasta onde deseja criar o projeto e execute:</p>
+
+<pre><span class="comment"># Criar o projeto Expo (template blank = mínimo, sem TypeScript)</span>
+npx create-expo-app@latest sistema_firebase --template blank
+
+<span class="comment"># Entrar na pasta do projeto</span>
+cd sistema_firebase
+
+<span class="comment"># Instalar Firebase e dependências de navegação</span>
+npm install firebase @react-navigation/native @react-navigation/stack ^
+  react-native-screens react-native-safe-area-context ^
+  react-native-gesture-handler @react-native-async-storage/async-storage</pre>
+
+<div class="box box-info">
+  <strong>ℹ️ O que cada pacote faz</strong>
+  <table style="margin:8px 0 0;">
+    <tr><td><code>firebase</code></td><td>SDK do Firebase (Firestore, Auth)</td></tr>
+    <tr><td><code>@react-navigation/native</code></td><td>Núcleo da navegação</td></tr>
+    <tr><td><code>@react-navigation/stack</code></td><td>Navegação em pilha (stack)</td></tr>
+    <tr><td><code>react-native-screens</code></td><td>Otimização de telas nativas</td></tr>
+    <tr><td><code>react-native-safe-area-context</code></td><td>Áreas seguras da tela</td></tr>
+    <tr><td><code>react-native-gesture-handler</code></td><td>Gestos de navegação</td></tr>
+    <tr><td><code>@react-native-async-storage/async-storage</code></td><td>Persistência do login</td></tr>
+  </table>
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 6. ESTRUTURA DE ARQUIVOS                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="estrutura">6. Estrutura de Arquivos</h2>
+
+<p>Organize o projeto da seguinte forma:</p>
+
+<div class="estrutura">
+sistema_firebase/<br>
+├── <strong>App.js</strong>                       ← Ponto de entrada<br>
+├── package.json<br>
+├── app.json<br>
+└── <strong>src/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>config/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   └── firebase.js          ← Configuração Firebase<br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>services/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   ├── authService.js       ← Funções de Login/Logout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   └── userService.js       ← Funções CRUD (Firestore)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>screens/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   ├── LoginScreen.js       ← Tela de Login<br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   ├── CadastroScreen.js    ← Tela de Cadastro<br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   ├── ListagemScreen.js    ← Tela de Listagem<br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   └── AlteracaoScreen.js   ← Tela de Alteração<br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>components/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   ├── InputField.js        ← Campo de entrada reutilizável<br>
+&nbsp;&nbsp;&nbsp;&nbsp;│   └── UserCard.js          ← Card de pessoa na listagem<br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <strong>navigation/</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── AppNavigator.js      ← Configuração das rotas
+</div>
+
+<div class="box box-success">
+  <strong>✅ Por que essa estrutura?</strong>
+  Separar por pastas (<code>services/</code>, <code>screens/</code>, <code>components/</code>) 
+  é uma boa prática que mantém o código organizado, facilita manutenção e permite 
+  reutilizar funções em diferentes partes do app.
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 7. CONFIGURAÇÃO FIREBASE                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="config">7. Arquivo de Configuração — <code>src/config/firebase.js</code></h2>
+
+<p>Este é o arquivo mais importante. Ele conecta o app ao seu projeto Firebase.</p>
+
+<pre><span class="comment">// src/config/firebase.js</span>
+<span class="keyword">import</span> { initializeApp } <span class="keyword">from</span> <span class="string">'firebase/app'</span>;
+<span class="keyword">import</span> { getFirestore } <span class="keyword">from</span> <span class="string">'firebase/firestore'</span>;
+<span class="keyword">import</span> { initializeAuth, getReactNativePersistence } <span class="keyword">from</span> <span class="string">'firebase/auth'</span>;
+<span class="keyword">import</span> AsyncStorage <span class="keyword">from</span> <span class="string">'@react-native-async-storage/async-storage'</span>;
+
+<span class="comment">// ⚠️ Substitua pelos dados do SEU projeto Firebase</span>
+<span class="keyword">const</span> firebaseConfig = {
+  apiKey: <span class="string">"SUA_API_KEY"</span>,
+  authDomain: <span class="string">"SEU_AUTH_DOMAIN"</span>,
+  projectId: <span class="string">"SEU_PROJECT_ID"</span>,
+  storageBucket: <span class="string">"SEU_STORAGE_BUCKET"</span>,
+  messagingSenderId: <span class="string">"SEU_MESSAGING_SENDER_ID"</span>,
+  appId: <span class="string">"SEU_APP_ID"</span>,
+};
+
+<span class="comment">// Inicializa o app Firebase com as configurações</span>
+<span class="keyword">const</span> app = <span class="fn">initializeApp</span>(firebaseConfig);
+
+<span class="comment">// getFirestore() retorna a instância do banco de dados</span>
+<span class="keyword">export const</span> db = <span class="fn">getFirestore</span>(app);
+
+<span class="comment">// initializeAuth com AsyncStorage mantém o login persistente</span>
+<span class="keyword">export const</span> auth = <span class="fn">initializeAuth</span>(app, {
+  persistence: <span class="fn">getReactNativePersistence</span>(AsyncStorage),
+});</pre>
+
+<div class="box box-warning">
+  <strong>⚠️ Importante: Substitua as credenciais</strong>
+  Abra o arquivo <code>src/config/firebase.js</code> e substitua todos os valores 
+  <code>"SUA_API_KEY"</code>, <code>"SEU_PROJECT_ID"</code> etc. pelos dados copiados 
+  do Firebase Console no Passo 4 da seção anterior.
+</div>
+
+<h3>O que cada função faz</h3>
+<table>
+  <thead><tr><th>Função</th><th>Descrição</th></tr></thead>
+  <tbody>
+    <tr><td><code>initializeApp(config)</code></td><td>Registra e inicializa o app Firebase com as credenciais</td></tr>
+    <tr><td><code>getFirestore(app)</code></td><td>Retorna a instância do banco Firestore</td></tr>
+    <tr><td><code>initializeAuth(app, options)</code></td><td>Inicializa o serviço de autenticação</td></tr>
+    <tr><td><code>getReactNativePersistence</code></td><td>Mantém o login salvo no dispositivo via AsyncStorage</td></tr>
+  </tbody>
+</table>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 8. AUTH SERVICE                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="auth-service">8. Serviço de Autenticação — <code>src/services/authService.js</code></h2>
+
+<p>
+  Isola todas as funções de autenticação. As telas chamam essas funções 
+  sem precisar saber como o Firebase Authentication funciona internamente.
+</p>
+
+<pre><span class="comment">// src/services/authService.js</span>
+<span class="keyword">import</span> {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} <span class="keyword">from</span> <span class="string">'firebase/auth'</span>;
+<span class="keyword">import</span> { auth } <span class="keyword">from</span> <span class="string">'../config/firebase'</span>;
+
+<span class="comment">// CREATE USER — Cria novo usuário no Authentication</span>
+<span class="keyword">export const</span> <span class="fn">cadastrarUsuario</span> = <span class="keyword">async</span> (email, senha) => {
+  <span class="keyword">const</span> credencial = <span class="keyword">await</span> <span class="fn">createUserWithEmailAndPassword</span>(auth, email, senha);
+  <span class="keyword">return</span> credencial.user;
+};
+
+<span class="comment">// SIGN IN — Autentica o usuário com email e senha</span>
+<span class="keyword">export const</span> <span class="fn">fazerLogin</span> = <span class="keyword">async</span> (email, senha) => {
+  <span class="keyword">const</span> credencial = <span class="keyword">await</span> <span class="fn">signInWithEmailAndPassword</span>(auth, email, senha);
+  <span class="keyword">return</span> credencial.user;
+};
+
+<span class="comment">// SIGN OUT — Encerra a sessão do usuário atual</span>
+<span class="keyword">export const</span> <span class="fn">fazerLogout</span> = <span class="keyword">async</span> () => {
+  <span class="keyword">await</span> <span class="fn">signOut</span>(auth);
+};</pre>
+
+<h3>Descrição dos métodos</h3>
+<table>
+  <thead><tr><th>Método Firebase Auth</th><th>O que faz</th></tr></thead>
+  <tbody>
+    <tr><td><code>createUserWithEmailAndPassword</code></td><td>Cria nova conta com email e senha. Retorna UserCredential.</td></tr>
+    <tr><td><code>signInWithEmailAndPassword</code></td><td>Autentica usuário existente. Lança erro se inválido.</td></tr>
+    <tr><td><code>signOut</code></td><td>Desloga o usuário. <code>auth.currentUser</code> passa a ser <code>null</code>.</td></tr>
+    <tr><td><code>onAuthStateChanged</code></td><td>Listener que detecta mudanças no estado de autenticação.</td></tr>
+  </tbody>
+</table>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 9. USER SERVICE (CRUD)                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="user-service">9. Serviço CRUD — <code>src/services/userService.js</code></h2>
+
+<p>
+  Este é o coração do CRUD. Cada função representa exatamente uma operação 
+  no Firestore. As telas chamam essas funções sem conhecer a API do Firebase diretamente.
+</p>
+
+<h3>9.1 — CREATE: <code>addDoc()</code></h3>
+<pre><span class="keyword">import</span> { collection, addDoc, serverTimestamp } <span class="keyword">from</span> <span class="string">'firebase/firestore'</span>;
+
+<span class="keyword">export const</span> <span class="fn">cadastrarPessoa</span> = <span class="keyword">async</span> (dados) => {
+  <span class="comment">// collection(db, 'pessoas') → referência à coleção "pessoas"</span>
+  <span class="keyword">const</span> colecaoRef = <span class="fn">collection</span>(db, <span class="string">'pessoas'</span>);
+  
+  <span class="comment">// addDoc() adiciona um novo documento com ID automático</span>
+  <span class="keyword">const</span> docRef = <span class="keyword">await</span> <span class="fn">addDoc</span>(colecaoRef, {
+    ...dados,
+    criadoEm: <span class="fn">serverTimestamp</span>(), <span class="comment">// Timestamp do servidor</span>
+  });
+  
+  <span class="keyword">return</span> docRef.id; <span class="comment">// Retorna o ID gerado</span>
+};</pre>
+
+<div class="box box-info">
+  <strong>ℹ️ addDoc vs setDoc</strong>
+  Use <code>addDoc()</code> quando quiser que o Firestore gere o ID automaticamente.
+  Use <code>setDoc(doc(db, 'col', 'meuId'), dados)</code> quando quiser definir o ID manualmente.
+</div>
+
+<h3>9.2 — READ: <code>getDocs()</code></h3>
+<pre><span class="keyword">import</span> { collection, getDocs, query, orderBy } <span class="keyword">from</span> <span class="string">'firebase/firestore'</span>;
+
+<span class="keyword">export const</span> <span class="fn">listarPessoas</span> = <span class="keyword">async</span> () => {
+  <span class="keyword">const</span> colecaoRef = <span class="fn">collection</span>(db, <span class="string">'pessoas'</span>);
+  
+  <span class="comment">// query() cria uma consulta com filtros (aqui: ordenar por nome)</span>
+  <span class="keyword">const</span> consulta = <span class="fn">query</span>(colecaoRef, <span class="fn">orderBy</span>(<span class="string">'nome'</span>));
+  
+  <span class="comment">// getDocs() busca todos os documentos que correspondem à consulta</span>
+  <span class="keyword">const</span> snapshot = <span class="keyword">await</span> <span class="fn">getDocs</span>(consulta);
+  
+  <span class="comment">// .docs é um array de DocumentSnapshot</span>
+  <span class="comment">// Mapeia cada doc para { id, ...campos }</span>
+  <span class="keyword">return</span> snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.<span class="fn">data</span>(),
+  }));
+};</pre>
+
+<h3>9.3 — UPDATE: <code>updateDoc()</code></h3>
+<pre><span class="keyword">import</span> { doc, updateDoc, serverTimestamp } <span class="keyword">from</span> <span class="string">'firebase/firestore'</span>;
+
+<span class="keyword">export const</span> <span class="fn">atualizarPessoa</span> = <span class="keyword">async</span> (id, dados) => {
+  <span class="comment">// doc(db, 'pessoas', id) → referência ao documento específico</span>
+  <span class="keyword">const</span> docRef = <span class="fn">doc</span>(db, <span class="string">'pessoas'</span>, id);
+  
+  <span class="comment">// updateDoc() atualiza APENAS os campos enviados</span>
+  <span class="comment">// Outros campos permanecem intactos no Firestore</span>
+  <span class="keyword">await</span> <span class="fn">updateDoc</span>(docRef, {
+    ...dados,
+    atualizadoEm: <span class="fn">serverTimestamp</span>(),
+  });
+};</pre>
+
+<h3>9.4 — DELETE: <code>deleteDoc()</code></h3>
+<pre><span class="keyword">import</span> { doc, deleteDoc } <span class="keyword">from</span> <span class="string">'firebase/firestore'</span>;
+
+<span class="keyword">export const</span> <span class="fn">excluirPessoa</span> = <span class="keyword">async</span> (id) => {
+  <span class="comment">// doc(db, 'pessoas', id) → referência ao documento</span>
+  <span class="keyword">const</span> docRef = <span class="fn">doc</span>(db, <span class="string">'pessoas'</span>, id);
+  
+  <span class="comment">// deleteDoc() remove o documento permanentemente</span>
+  <span class="keyword">await</span> <span class="fn">deleteDoc</span>(docRef);
+};</pre>
+
+<div class="box box-danger">
+  <strong>⚠️ deleteDoc() é irreversível!</strong>
+  Sempre exiba um diálogo de confirmação (<code>Alert.alert</code>) antes de chamar 
+  <code>deleteDoc()</code>. O dado excluído não pode ser recuperado.
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 10. COMPONENTES                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="componentes">10. Componentes Reutilizáveis</h2>
+
+<h3>InputField — Campo de entrada padronizado</h3>
+<p>
+  Em vez de repetir o estilo de <code>TextInput</code> em cada tela, criamos um 
+  componente reutilizável que aceita <code>label</code>, <code>value</code>, 
+  <code>onChangeText</code> e outras props padrão.
+</p>
+
+<pre><span class="comment">// Uso do componente em qualquer tela:</span>
+&lt;InputField
+  label=<span class="string">"Nome"</span>
+  value={nome}
+  onChangeText={setNome}
+  placeholder=<span class="string">"Digite o nome"</span>
+/&gt;</pre>
+
+<h3>UserCard — Exibe dados de uma pessoa</h3>
+<p>
+  Renderiza as informações de uma pessoa na lista e expõe dois callbacks: 
+  <code>onEditar</code> (navega para alteração) e <code>onExcluir</code> (deleta o registro).
+</p>
+
+<pre><span class="comment">// Uso na FlatList da ListagemScreen:</span>
+&lt;UserCard
+  pessoa={item}
+  onEditar={handleEditar}
+  onExcluir={handleExcluir}
+/&gt;</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 11. TELA DE LOGIN                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="login">11. Tela de Login — <code>src/screens/LoginScreen.js</code></h2>
+
+<p>Tela inicial do app. Autentica o usuário via Firebase Authentication.</p>
+
+<h3>Fluxo da tela</h3>
+<ol>
+  <li>Usuário digita email e senha</li>
+  <li>Pressiona "Entrar"</li>
+  <li>Chama <code>fazerLogin(email, senha)</code> do <code>authService</code></li>
+  <li>Se sucesso → <code>navigation.replace('Listagem')</code></li>
+  <li>Se erro → <code>Alert.alert()</code> com mensagem traduzida</li>
+</ol>
+
+<pre><span class="comment">// Trecho principal da LoginScreen:</span>
+<span class="keyword">const</span> <span class="fn">handleLogin</span> = <span class="keyword">async</span> () => {
+  <span class="keyword">if</span> (!email.trim() || !senha.trim()) {
+    <span class="fn">Alert.alert</span>(<span class="string">'Atenção'</span>, <span class="string">'Preencha email e senha.'</span>);
+    <span class="keyword">return</span>;
+  }
+
+  <span class="fn">setCarregando</span>(<span class="keyword">true</span>);
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> <span class="fn">fazerLogin</span>(email.trim(), senha);
+    navigation.<span class="fn">replace</span>(<span class="string">'Listagem'</span>); <span class="comment">// replace = remove Login da pilha</span>
+  } <span class="keyword">catch</span> (erro) {
+    <span class="comment">// Trata erros específicos do Firebase Auth</span>
+    <span class="fn">Alert.alert</span>(<span class="string">'Erro no Login'</span>, mensagemAmigavel);
+  } <span class="keyword">finally</span> {
+    <span class="fn">setCarregando</span>(<span class="keyword">false</span>);
+  }
+};</pre>
+
+<div class="box box-info">
+  <strong>ℹ️ navigation.replace() vs navigation.navigate()</strong>
+  <code>replace('Listagem')</code> substitui a tela atual na pilha, evitando que o usuário 
+  possa apertar "voltar" para retornar ao Login estando autenticado.
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 12. TELA DE CADASTRO                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="cadastro">12. Tela de Cadastro (CREATE) — <code>src/screens/CadastroScreen.js</code></h2>
+
+<p>
+  Responsável por <strong>criar novos registros</strong> na coleção <code>pessoas</code> 
+  do Firestore usando <code>addDoc()</code>.
+</p>
+
+<h3>Como funciona</h3>
+<ol>
+  <li>O usuário preenche nome, email, telefone e idade</li>
+  <li>Ao pressionar "Cadastrar", chama <code>cadastrarPessoa(dados)</code></li>
+  <li>Internamente, <code>addDoc()</code> grava o documento no Firestore</li>
+  <li>O ID gerado automaticamente é retornado e logado</li>
+  <li>Exibe Alert de sucesso e navega para Listagem</li>
+</ol>
+
+<pre><span class="comment">// Trecho do handleCadastrar:</span>
+<span class="keyword">const</span> dadosPessoa = {
+  nome: nome.trim(),
+  email: email.trim().<span class="fn">toLowerCase</span>(),
+  telefone: telefone.trim(),
+  idade: idade ? <span class="fn">parseInt</span>(idade, 10) : <span class="keyword">null</span>,
+};
+
+<span class="comment">// Chama addDoc() via userService</span>
+<span class="keyword">const</span> idGerado = <span class="keyword">await</span> <span class="fn">cadastrarPessoa</span>(dadosPessoa);
+console.<span class="fn">log</span>(<span class="string">'ID gerado:'</span>, idGerado);
+
+<span class="keyword">await</span> navigation.<span class="fn">navigate</span>(<span class="string">'Listagem'</span>);</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 13. TELA DE LISTAGEM                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="listagem">13. Tela de Listagem (READ + DELETE) — <code>src/screens/ListagemScreen.js</code></h2>
+
+<p>Exibe todos os registros e permite excluir ou navegar para edição.</p>
+
+<h3>Detalhes técnicos importantes</h3>
+
+<h4>useFocusEffect — Recarregar ao voltar</h4>
+<pre><span class="comment">// useFocusEffect executa o callback SEMPRE que a tela
+// recebe foco (inclusive ao voltar de outra tela)</span>
+<span class="fn">useFocusEffect</span>(
+  <span class="fn">useCallback</span>(() => {
+    <span class="fn">setCarregando</span>(<span class="keyword">true</span>);
+    <span class="fn">carregarPessoas</span>(); <span class="comment">// chama getDocs() novamente</span>
+  }, [carregarPessoas])
+);</pre>
+
+<h4>Atualização otimista após exclusão</h4>
+<pre><span class="keyword">const</span> <span class="fn">handleExcluir</span> = <span class="keyword">async</span> (id) => {
+  <span class="keyword">await</span> <span class="fn">excluirPessoa</span>(id); <span class="comment">// deleteDoc() no Firestore</span>
+  
+  <span class="comment">// Em vez de recarregar toda a lista, remove apenas o item local
+  // Isso torna a UI mais responsiva (atualização otimista)</span>
+  <span class="fn">setPessoas</span>((prev) => prev.<span class="fn">filter</span>((p) => p.id !== id));
+};</pre>
+
+<h4>Pull-to-Refresh</h4>
+<pre><span class="comment">// RefreshControl adiciona o gesto de puxar para atualizar</span>
+&lt;FlatList
+  refreshControl={
+    &lt;RefreshControl
+      refreshing={atualizando}
+      onRefresh={() => { <span class="fn">setAtualizando</span>(<span class="keyword">true</span>); <span class="fn">carregarPessoas</span>(); }}
+      colors={[<span class="string">'#3F51B5'</span>]}
+    /&gt;
+  }
+/&gt;</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 14. TELA DE ALTERAÇÃO                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="alteracao">14. Tela de Alteração (UPDATE) — <code>src/screens/AlteracaoScreen.js</code></h2>
+
+<p>
+  Recebe os dados da pessoa via <strong>parâmetros de navegação</strong> 
+  (<code>route.params</code>) e permite editar os campos.
+</p>
+
+<h3>Como os dados chegam nesta tela</h3>
+<pre><span class="comment">// Na ListagemScreen, ao clicar em "Editar":</span>
+navigation.<span class="fn">navigate</span>(<span class="string">'Alteracao'</span>, { pessoa }); <span class="comment">// passa o objeto</span>
+
+<span class="comment">// Na AlteracaoScreen, recebe via route.params:</span>
+<span class="keyword">const</span> { pessoa } = route.params;
+
+<span class="comment">// Pré-preenche os campos com os dados existentes:</span>
+<span class="keyword">const</span> [nome, setNome] = <span class="fn">useState</span>(pessoa.nome || <span class="string">''</span>);</pre>
+
+<h3>Como o update funciona</h3>
+<pre><span class="keyword">const</span> dadosAtualizados = {
+  nome: nome.trim(),
+  email: email.trim().<span class="fn">toLowerCase</span>(),
+  telefone: telefone.trim(),
+  idade: idade ? <span class="fn">parseInt</span>(idade, 10) : <span class="keyword">null</span>,
+};
+
+<span class="comment">// updateDoc() atualiza APENAS os campos informados
+// O campo "criadoEm" NÃO é alterado</span>
+<span class="keyword">await</span> <span class="fn">atualizarPessoa</span>(pessoa.id, dadosAtualizados);</pre>
+
+<div class="box box-success">
+  <strong>✅ Diferença entre updateDoc e setDoc</strong>
+  <ul style="margin:8px 0 0; padding-left:20px;">
+    <li><code>updateDoc(ref, dados)</code> → Atualiza apenas os campos informados, preserva os demais</li>
+    <li><code>setDoc(ref, dados)</code> → <strong>Substitui</strong> o documento inteiro (campos não informados são removidos)</li>
+    <li><code>setDoc(ref, dados, &#123; merge: true &#125;)</code> → Funciona como updateDoc, mas cria o documento se não existir</li>
+  </ul>
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 15. NAVEGAÇÃO                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="navegacao">15. Configuração de Navegação — <code>src/navigation/AppNavigator.js</code></h2>
+
+<p>Gerencia quais telas existem e a tela inicial baseada no estado de autenticação.</p>
+
+<pre><span class="comment">// Verificar autenticação ao iniciar:</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="comment">// onAuthStateChanged monitora mudanças no login</span>
+  <span class="keyword">const</span> unsubscribe = <span class="fn">onAuthStateChanged</span>(auth, (usuario) => {
+    <span class="fn">setUsuarioLogado</span>(usuario); <span class="comment">// null se não logado</span>
+    <span class="fn">setVerificando</span>(<span class="keyword">false</span>);
+  });
+  <span class="keyword">return</span> unsubscribe; <span class="comment">// cancela o listener ao desmontar</span>
+}, []);
+
+<span class="comment">// Tela inicial baseada no estado de auth:</span>
+&lt;Stack.Navigator
+  initialRouteName={usuarioLogado ? <span class="string">'Listagem'</span> : <span class="string">'Login'</span>}
+&gt;</pre>
+
+<h3>Registro de todas as telas</h3>
+<pre>&lt;Stack.Screen name=<span class="string">"Login"</span>    component={LoginScreen}    /&gt;
+&lt;Stack.Screen name=<span class="string">"Cadastro"</span> component={CadastroScreen} /&gt;
+&lt;Stack.Screen name=<span class="string">"Listagem"</span> component={ListagemScreen} /&gt;
+&lt;Stack.Screen name=<span class="string">"Alteracao"</span> component={AlteracaoScreen}/&gt;</pre>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 16. EXECUTANDO                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="executar">16. Executando o Projeto</h2>
+
+<div class="box box-warning">
+  <strong>⚠️ Antes de executar</strong>
+  Certifique-se de ter substituído as credenciais do Firebase em 
+  <code>src/config/firebase.js</code> e ativado o Firestore e Authentication no console.
+</div>
+
+<div class="passo">
+  <span class="passo-numero">1</span>
+  <h3>Iniciar o servidor de desenvolvimento</h3>
+  <pre>cd sistema_firebase
+npm start</pre>
+  <p>O terminal exibirá um QR Code.</p>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">2</span>
+  <h3>Abrir no dispositivo (Expo Go)</h3>
+  <ol>
+    <li>Instale o app <strong>Expo Go</strong> no celular (Play Store / App Store)</li>
+    <li>No Android: abra o Expo Go e escaneie o QR Code</li>
+    <li>No iPhone: use a câmera para escanear o QR Code</li>
+    <li>O celular e o computador devem estar na <strong>mesma rede Wi-Fi</strong></li>
+  </ol>
+</div>
+
+<div class="passo">
+  <span class="passo-numero">3</span>
+  <h3>Testar o fluxo completo</h3>
+  <ol>
+    <li>Na tela de Login, toque em <strong>"Não tem conta? Cadastre-se"</strong></li>
+    <li>Cadastre o primeiro usuário (na tela de Cadastro de Pessoas)</li>
+    <li>Verifique no Firebase Console → Firestore se o registro apareceu</li>
+    <li>Teste editar e excluir registros</li>
+    <li>Teste o logout e login novamente</li>
+  </ol>
+</div>
+
+<div class="box box-info">
+  <strong>ℹ️ Para criar usuários de login</strong>
+  O <code>authService</code> possui a função <code>cadastrarUsuario(email, senha)</code>. 
+  Você pode chamar ela uma vez para criar um usuário, ou criar manualmente no 
+  Firebase Console → Authentication → Adicionar usuário.
+</div>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 17. RESUMO                                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2 id="resumo">17. Resumo dos Métodos Firestore</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Operação</th>
+      <th>Método Firestore</th>
+      <th>Arquivo</th>
+      <th>Tela</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge green">CREATE</span></td>
+      <td><code>addDoc(colecaoRef, dados)</code></td>
+      <td>userService.js</td>
+      <td>CadastroScreen</td>
+    </tr>
+    <tr>
+      <td><span class="badge">READ</span></td>
+      <td><code>getDocs(query(colecaoRef, orderBy(...)))</code></td>
+      <td>userService.js</td>
+      <td>ListagemScreen</td>
+    </tr>
+    <tr>
+      <td><span class="badge orange">UPDATE</span></td>
+      <td><code>updateDoc(docRef, dados)</code></td>
+      <td>userService.js</td>
+      <td>AlteracaoScreen</td>
+    </tr>
+    <tr>
+      <td><span class="badge red">DELETE</span></td>
+      <td><code>deleteDoc(docRef)</code></td>
+      <td>userService.js</td>
+      <td>ListagemScreen</td>
+    </tr>
+    <tr>
+      <td><span class="badge" style="background:#9C27B0">AUTH</span></td>
+      <td><code>signInWithEmailAndPassword</code></td>
+      <td>authService.js</td>
+      <td>LoginScreen</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Comparativo: Firestore vs SQL</h3>
+<table>
+  <thead>
+    <tr><th>SQL</th><th>Firestore</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>INSERT INTO pessoas VALUES (...)</code></td><td><code>addDoc(collection(db,'pessoas'), dados)</code></td></tr>
+    <tr><td><code>SELECT * FROM pessoas ORDER BY nome</code></td><td><code>getDocs(query(ref, orderBy('nome')))</code></td></tr>
+    <tr><td><code>UPDATE pessoas SET nome=? WHERE id=?</code></td><td><code>updateDoc(doc(db,'pessoas',id), dados)</code></td></tr>
+    <tr><td><code>DELETE FROM pessoas WHERE id=?</code></td><td><code>deleteDoc(doc(db,'pessoas',id))</code></td></tr>
+  </tbody>
+</table>
+
+<hr />
+
+<div class="box box-success" style="text-align:center; padding: 24px;">
+  <strong style="font-size: 14pt;">🎉 Tutorial concluído!</strong>
+  <p style="margin:8px 0 0;">
+    Você aprendeu a criar um CRUD completo com React Native + Firebase Firestore, 
+    com autenticação, navegação entre telas e componentes reutilizáveis.
+  </p>
+  <p style="margin:4px 0 0; color:#555; font-size: 10pt;">
+    Para converter este arquivo em Word: Abra no navegador → Arquivo → Imprimir → Salvar como PDF,
+    ou use o menu Arquivo → Salvar como → formato .doc no Word.
+  </p>
+</div>
+
+</body>
+</html>
