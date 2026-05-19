@@ -170,6 +170,10 @@ const HomeScreen = ({ navigation }) => {
       <Text style={styles.titulo}>Home do Usuario</Text>
       <Text style={styles.subtitulo}>Dados cadastrados no Firebase</Text>
 
+      <TouchableOpacity style={styles.btnLogoutTopo} onPress={handleLogout}>
+        <Text style={styles.btnTexto}>Sair da conta</Text>
+      </TouchableOpacity>
+
       <View style={styles.card}>
         <Text style={styles.linha}><Text style={styles.label}>Nome: </Text>{perfil?.nome || '-'}</Text>
         <Text style={styles.linha}><Text style={styles.label}>Email: </Text>{perfil?.email || '-'}</Text>
@@ -223,10 +227,6 @@ const HomeScreen = ({ navigation }) => {
 
       <TouchableOpacity style={styles.btnCadastro} onPress={() => navigation.navigate('Cadastro')}>
         <Text style={styles.btnTexto}>Atualizar Cadastro</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
-        <Text style={styles.btnTexto}>Sair</Text>
       </TouchableOpacity>
       </View>
     </ScrollView>
@@ -317,6 +317,15 @@ const styles = StyleSheet.create({
     minHeight: 46,
     justifyContent: 'center',
   },
+  btnLogoutTopo: {
+    backgroundColor: '#E74C3C',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+    minHeight: 46,
+    justifyContent: 'center',
+  },
   rowAcoes: {
     flexDirection: 'row',
     gap: 10,
@@ -352,14 +361,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minHeight: 42,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnLogout: {
-    backgroundColor: '#E74C3C',
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-    minHeight: 46,
     justifyContent: 'center',
   },
   btnTexto: {
