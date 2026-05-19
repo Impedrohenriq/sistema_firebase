@@ -126,3 +126,26 @@ export const buscarPerfilUsuarioPorUid = async (uid) => {
   if (!snapshot.exists()) return null;
   return { id: snapshot.id, ...snapshot.data() };
 };
+
+export const listarPerfisUsuarios = async () => {
+  const colecaoRef = collection(db, 'users');
+  const consulta = query(colecaoRef, orderBy('nome'));
+  const snapshot = await getDocs(consulta);
+  return snapshot.docs.map((item) => ({
+    id: item.id,
+    ...item.data(),
+  }));
+};
+
+export const atualizarPerfilUsuario = async (uid, dados) => {
+  const docRef = doc(db, 'users', uid);
+  await updateDoc(docRef, {
+    ...dados,
+    atualizadoEm: serverTimestamp(),
+  });
+};
+
+export const excluirPerfilUsuario = async (uid) => {
+  const docRef = doc(db, 'users', uid);
+  await deleteDoc(docRef);
+};

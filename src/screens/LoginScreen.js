@@ -58,6 +58,7 @@ const LoginScreen = ({ navigation }) => {
       if (erro.code === 'auth/wrong-password') mensagem = 'Senha incorreta.';
       if (erro.code === 'auth/invalid-email') mensagem = 'Email inválido.';
       if (erro.code === 'auth/too-many-requests') mensagem = 'Muitas tentativas. Aguarde e tente novamente.';
+      if (erro.code === 'auth/configuration-not-found') mensagem = 'Ative Email/Senha no Firebase Authentication e autorize localhost.';
       Alert.alert('Erro no Login', mensagem);
     } finally {
       setCarregando(false);

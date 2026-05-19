@@ -83,7 +83,20 @@ const CadastroScreen = ({ navigation }) => {
       setIdade('');
     } catch (erro) {
       console.error('Erro ao cadastrar:', erro);
-      Alert.alert('Erro', 'Não foi possível cadastrar. Tente novamente.');
+      let mensagem = 'Não foi possível cadastrar. Tente novamente.';
+      if (erro.code === 'auth/configuration-not-found') {
+        mensagem = 'Ative Email/Senha no Firebase Authentication e autorize localhost.';
+      }
+      if (erro.code === 'auth/email-already-in-use') {
+        mensagem = 'Este email já está em uso. Tente outro email.';
+      }
+      if (erro.code === 'auth/invalid-email') {
+        mensagem = 'Email inválido.';
+      }
+      if (erro.code === 'auth/weak-password') {
+        mensagem = 'Senha fraca. Use pelo menos 6 caracteres.';
+      }
+      Alert.alert('Erro', mensagem);
     } finally {
       setCarregando(false);
     }
