@@ -67,9 +67,15 @@ const LoginScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={[styles.scroll, Platform.OS === 'web' ? styles.scrollWeb : null]}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator
+      >
+        <View style={styles.contentWrap}>
         {/* Cabeçalho */}
         <View style={styles.header}>
           <Text style={styles.titulo}>🔥 Firebase App</Text>
@@ -116,6 +122,7 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.linkTexto}>Não tem conta? Cadastre-se aqui</Text>
         </TouchableOpacity>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -125,11 +132,24 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  scroll: {
+    flex: 1,
+  },
+  scrollWeb: {
+    overflowY: 'scroll',
+  },
   container: {
     flexGrow: 1,
     backgroundColor: '#F0F4FF',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     padding: 24,
+    paddingTop: 40,
+    paddingBottom: 48,
+  },
+  contentWrap: {
+    width: '100%',
+    maxWidth: 520,
   },
   header: {
     alignItems: 'center',
@@ -146,6 +166,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   formulario: {
+    width: '100%',
     backgroundColor: '#FFF',
     borderRadius: 16,
     padding: 24,
@@ -162,6 +183,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
+    minHeight: 48,
   },
   btnDesabilitado: {
     opacity: 0.6,
@@ -174,6 +196,8 @@ const styles = StyleSheet.create({
   linkCadastro: {
     alignItems: 'center',
     padding: 8,
+    minHeight: 40,
+    justifyContent: 'center',
   },
   linkTexto: {
     color: '#3F51B5',

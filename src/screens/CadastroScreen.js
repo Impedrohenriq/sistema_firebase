@@ -92,9 +92,18 @@ const CadastroScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={[styles.scroll, Platform.OS === 'web' ? styles.scrollWeb : null]}
+        contentContainerStyle={[
+          styles.container,
+          { paddingBottom: 36 },
+        ]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator
+      >
+        <View style={styles.contentWrap}>
         {/* Cabeçalho */}
         <View style={styles.header}>
           <Text style={styles.titulo}>Nova Pessoa</Text>
@@ -125,22 +134,6 @@ const CadastroScreen = ({ navigation }) => {
             secureTextEntry
             autoCapitalize="none"
           />
-          <InputField
-            label="Telefone"
-            value={telefone}
-            onChangeText={setTelefone}
-            placeholder="(11) 99999-9999"
-            keyboardType="phone-pad"
-          />
-          <InputField
-            label="Idade"
-            value={idade}
-            onChangeText={setIdade}
-            placeholder="Ex: 25"
-            keyboardType="numeric"
-          />
-
-          <Text style={styles.obrigatorio}>* Campos obrigatórios</Text>
 
           {/* Botão Cadastrar */}
           <TouchableOpacity
@@ -162,6 +155,26 @@ const CadastroScreen = ({ navigation }) => {
           >
             <Text style={styles.btnVoltarTexto}>Voltar</Text>
           </TouchableOpacity>
+
+          <Text style={styles.opcionalTitulo}>Campos opcionais</Text>
+
+          <InputField
+            label="Telefone"
+            value={telefone}
+            onChangeText={setTelefone}
+            placeholder="(11) 99999-9999"
+            keyboardType="phone-pad"
+          />
+          <InputField
+            label="Idade"
+            value={idade}
+            onChangeText={setIdade}
+            placeholder="Ex: 25"
+            keyboardType="numeric"
+          />
+
+          <Text style={styles.obrigatorio}>* Campos obrigatórios</Text>
+        </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -172,10 +185,22 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  scroll: {
+    flex: 1,
+  },
+  scrollWeb: {
+    overflowY: 'scroll',
+  },
   container: {
     flexGrow: 1,
     backgroundColor: '#F0F4FF',
+    alignItems: 'center',
     padding: 24,
+    paddingTop: 28,
+  },
+  contentWrap: {
+    width: '100%',
+    maxWidth: 620,
   },
   header: {
     marginBottom: 24,
@@ -191,6 +216,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   formulario: {
+    width: '100%',
     backgroundColor: '#FFF',
     borderRadius: 16,
     padding: 24,
@@ -203,7 +229,14 @@ const styles = StyleSheet.create({
   obrigatorio: {
     fontSize: 12,
     color: '#999',
-    marginBottom: 16,
+    marginTop: 8,
+  },
+  opcionalTitulo: {
+    fontSize: 13,
+    color: '#666',
+    fontWeight: '600',
+    marginTop: 8,
+    marginBottom: 6,
   },
   btnCadastrar: {
     backgroundColor: '#4CAF50',
@@ -211,6 +244,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 12,
+    minHeight: 48,
   },
   btnDesabilitado: {
     opacity: 0.6,
@@ -226,6 +260,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#3F51B5',
+    minHeight: 46,
+    justifyContent: 'center',
   },
   btnVoltarTexto: {
     color: '#3F51B5',

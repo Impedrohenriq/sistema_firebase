@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  ScrollView,
+  Platform,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { fazerLogout, obterUsuarioAtual } from '../services/authService';
@@ -52,7 +54,12 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={Platform.OS === 'web' ? styles.scrollWeb : null}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator
+    >
+      <View style={styles.contentWrap}>
       <Text style={styles.titulo}>Home do Usuario</Text>
       <Text style={styles.subtitulo}>Dados cadastrados no Firebase</Text>
 
@@ -70,16 +77,27 @@ const HomeScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
         <Text style={styles.btnTexto}>Sair</Text>
       </TouchableOpacity>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollWeb: {
+    overflowY: 'scroll',
+  },
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#F0F4FF',
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingBottom: 36,
+  },
+  contentWrap: {
+    width: '100%',
+    maxWidth: 620,
   },
   loading: {
     flex: 1,
@@ -120,12 +138,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     marginBottom: 10,
+    minHeight: 46,
+    justifyContent: 'center',
   },
   btnLogout: {
     backgroundColor: '#E74C3C',
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
+    minHeight: 46,
+    justifyContent: 'center',
   },
   btnTexto: {
     color: '#FFF',
