@@ -96,6 +96,9 @@ const CadastroScreen = ({ navigation }) => {
       if (erro.code === 'auth/weak-password') {
         mensagem = 'Senha fraca. Use pelo menos 6 caracteres.';
       }
+      if (erro.code === 'permission-denied') {
+        mensagem = 'Sem permissao no Firestore. Ajuste as regras da colecao users.';
+      }
       Alert.alert('Erro', mensagem);
     } finally {
       setCarregando(false);
