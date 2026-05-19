@@ -27,6 +27,8 @@ import { cadastrarUsuario } from '../services/authService';
 import { salvarPerfilUsuario } from '../services/userService';
 
 const CadastroScreen = ({ navigation }) => {
+  const emailValidoRegex = /^\S+@\S+\.\S+$/;
+
   // ── Estados do formulário ─────────────────────────────────
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -50,8 +52,16 @@ const CadastroScreen = ({ navigation }) => {
       Alert.alert('Atenção', 'O campo Email é obrigatório.');
       return;
     }
+    if (!emailValidoRegex.test(email.trim())) {
+      Alert.alert('Atenção', 'Informe um email válido. Ex: nome@email.com');
+      return;
+    }
     if (!senha.trim()) {
       Alert.alert('Atenção', 'O campo Senha é obrigatório.');
+      return;
+    }
+    if (senha.trim().length < 6) {
+      Alert.alert('Atenção', 'A senha precisa ter pelo menos 6 caracteres.');
       return;
     }
 

@@ -26,6 +26,8 @@ import InputField from '../components/InputField';
 import { fazerLogin } from '../services/authService';
 
 const LoginScreen = ({ navigation }) => {
+  const emailValidoRegex = /^\S+@\S+\.\S+$/;
+
   // Estado dos campos do formulário
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -43,6 +45,14 @@ const LoginScreen = ({ navigation }) => {
     // Validação básica dos campos
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Atenção', 'Preencha email e senha para continuar.');
+      return;
+    }
+    if (!emailValidoRegex.test(email.trim())) {
+      Alert.alert('Atenção', 'Informe um email válido. Ex: nome@email.com');
+      return;
+    }
+    if (senha.trim().length < 6) {
+      Alert.alert('Atenção', 'A senha precisa ter pelo menos 6 caracteres.');
       return;
     }
 

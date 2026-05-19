@@ -22,6 +22,7 @@ import InputField from '../components/InputField';
 const HomeScreen = ({ navigation }) => {
   const [perfil, setPerfil] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
+  const [erroListagem, setErroListagem] = useState('');
   const [editandoId, setEditandoId] = useState(null);
   const [nomeEdicao, setNomeEdicao] = useState('');
   const [emailEdicao, setEmailEdicao] = useState('');
@@ -38,8 +39,21 @@ const HomeScreen = ({ navigation }) => {
       }
       const dados = await buscarPerfilUsuarioPorUid(usuario.uid);
       setPerfil(dados);
-      const lista = await listarPerfisUsuarios();
-      setUsuarios(lista);
+
+      // Tenta buscar todos os usuários. Se a regra bloquear, mantém
+      // pelo menos o usuário atual na lista e exibe orientação.
+      try {
+        const lista = await listarPerfisUsuarios();
+        setUsuarios(lista);
+        setErroListagem('');
+      } catch (erroLista) {
+        if (erroLista.code === 'permission-denied') {
+          setUsuarios(dados ? [dados] : []);
+          setErroListagem('Sem permissão para listar todos os usuários. Ajuste as regras do Firestore para leitura da coleção users.');
+        } else {
+          throw erroLista;
+        }
+      }
     } catch (erro) {
       Alert.alert('Erro', 'Nao foi possivel carregar seu perfil.');
     } finally {
@@ -147,9 +161,10 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={Platform.OS === 'web' ? styles.scrollWeb : null}
+      style={[styles.scroll, Platform.OS === 'web' ? styles.scrollWeb : null]}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator
+      keyboardShouldPersistTaps="handled"
     >
       <View style={styles.contentWrap}>
       <Text style={styles.titulo}>Home do Usuario</Text>
@@ -164,6 +179,7 @@ const HomeScreen = ({ navigation }) => {
 
       <Text style={styles.listagemTitulo}>Listagem (com editar e excluir)</Text>
       <View style={styles.card}>
+        {erroListagem ? <Text style={styles.avisoPermissao}>{erroListagem}</Text> : null}
         {usuarios.length === 0 ? (
           <Text style={styles.semDados}>Nenhum usuário cadastrado.</Text>
         ) : (
@@ -218,8 +234,13 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+    width: '100%',
+  },
   scrollWeb: {
-    overflowY: 'scroll',
+    overflowY: 'auto',
+    height: '100vh',
   },
   container: {
     flexGrow: 1,
@@ -267,6 +288,11 @@ const styles = StyleSheet.create({
   },
   semDados: {
     color: '#666',
+  },
+  avisoPermissao: {
+    color: '#C62828',
+    fontSize: 13,
+    marginBottom: 10,
   },
   itemUsuario: {
     borderBottomWidth: 1,
